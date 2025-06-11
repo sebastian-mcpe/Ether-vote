@@ -24,7 +24,7 @@ const getTotalRegisteredUsers = async () => {
     return Object.keys(users).length;
   } catch (error) {
     console.error('Error fetching user count:', error);
-    return 6; // Fallback to known user count
+    return 1; // Fallback to known user count (new contract)
   }
 };
 

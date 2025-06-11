@@ -49,6 +49,44 @@ const Dashboard = ({ user }) => {
         })
       );      // Find election with oldest end time
       const validElections = electionDetails.filter(e => e !== null);
+      
+      // Handle case when there are no elections (new contract)
+      if (validElections.length === 0) {
+        // Get registered users count
+        let registeredUsers = 1; // Default
+        try {
+          const usersResponse = await fetch('http://localhost:3000/users');
+          const usersData = await usersResponse.json();
+          registeredUsers = Object.keys(usersData).length;
+        } catch (error) {
+          console.log('Could not fetch user count');
+        }
+        
+        setStats({
+          totalVoters: registeredUsers,
+          totalVotes: 0,
+          activeElections: 0,
+          completedElections: 0
+        });
+        
+        setRecentActivity([
+          {
+            id: 1,
+            type: 'registration',
+            description: 'New user registered: sebastian from Monte Plata',
+            timestamp: 'Today',
+            user: 'sebastian'
+          }
+        ]);
+        
+        setProvinceData([
+          { name: 'Monte Plata', votes: 0, population: 185956, participationRate: 0, registeredUsers: 1 }
+        ]);
+        
+        setLoading(false);
+        return;
+      }
+      
       const oldestElection = validElections.reduce((oldest, current) => 
         (oldest.endTime < current.endTime) ? oldest : current
       );
@@ -206,24 +244,20 @@ const Dashboard = ({ user }) => {
         });
         
       } catch (error) {
-        console.error('Error fetching real user data:', error);        // Fallback to real data only
+        console.error('Error fetching real user data:', error);        // Fallback to real data only (new contract)
         realProvinceData = [
-          { name: 'San Pedro de Macorís', votes: 2, population: 290458, participationRate: 100, registeredUsers: 2 },
-          { name: 'Monte Plata', votes: 2, population: 185956, participationRate: 100, registeredUsers: 2 },
-          { name: 'Sánchez Ramírez', votes: 0, population: 151392, participationRate: 0, registeredUsers: 1 },
-          { name: 'María Trinidad Sánchez', votes: 0, population: 140925, participationRate: 0, registeredUsers: 1 }
+          { name: 'Monte Plata', votes: 0, population: 185956, participationRate: 0, registeredUsers: 1 }
         ];
       }
       
       setProvinceData(realProvinceData);
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
-        // Fallback to real data from oldest election if APIs fail
+      console.error('Error loading dashboard data:', error);      // Fallback to real data from new contract if APIs fail
       setStats({
-        totalVoters: 6, // Real registered users count
-        totalVotes: 4, // Real votes from election 1: q=1, w=1, e=2
-        activeElections: 1,
-        completedElections: 2
+        totalVoters: 1, // Real registered users count (new contract)
+        totalVotes: 0, // No votes yet on new contract
+        activeElections: 0,
+        completedElections: 0
       });
       
       setRecentActivity([

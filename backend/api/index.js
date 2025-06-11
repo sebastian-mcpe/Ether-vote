@@ -1057,6 +1057,54 @@ app.get("/health", async (req, res) => {
   }
 });
 
+// ================= Blockchain Analytics =================
+
+/**
+ * @swagger
+ * /analytics/blockchain-timeline:
+ *   get:
+ *     summary: Get real blockchain voting timeline data
+ *     responses:
+ *       200:
+ *         description: Blockchain voting timeline
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 hasRealData:
+ *                   type: boolean
+ *                 timelineData:
+ *                   type: array
+ *                 totalVotes:
+ *                   type: integer
+ *                 rawEvents:
+ *                   type: array
+ */
+app.get("/analytics/blockchain-timeline", async (req, res) => {
+  try {
+    const { fetchRealBlockchainData } = require("../blockchain-data-fetcher");
+    const result = await fetchRealBlockchainData();
+    
+    res.json({
+      hasRealData: result.votes.length > 0,
+      timelineData: result.votes,
+      totalVotes: result.summary.totalVotes,
+      totalElections: result.summary.totalElections,
+      oldestElection: result.summary.oldestElection,
+      rawEvents: result.votes
+    });
+  } catch (error) {
+    console.error("Blockchain analytics error:", error.message);
+    res.status(500).json({ 
+      error: error.message,
+      hasRealData: false,
+      timelineData: [],
+      totalVotes: 0
+    });
+  }
+});
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🗳 API server running on http://localhost:${PORT}`);

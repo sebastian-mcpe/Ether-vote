@@ -80,26 +80,42 @@ export const mapUsersToProvinces = (users, electionResults) => {
 /**
  * Generate realistic time-based voting data
  * @param {number} totalVotes - Total number of votes
+ * @param {boolean} useSampleData - Whether to use sample data when no votes exist
  * @returns {Array} Hourly voting data
  */
-export const generateTimeBasedVotes = (totalVotes) => {
+export const generateTimeBasedVotes = (totalVotes, useSampleData = false) => {
   const hours = [];
   const peakHours = [10, 11, 14, 15, 16]; // Peak voting hours
+  
+  // If no votes and useSampleData is true, create a realistic sample pattern
+  const sampleVotes = useSampleData && totalVotes === 0 ? 24 : totalVotes;
   
   for (let h = 8; h <= 18; h++) {
     const hour = h.toString().padStart(2, '0') + ':00';
     
-    // Distribute votes with peak during lunch and after work
-    let baseVotes = totalVotes / 11; // 11 hours of voting
-    
-    if (peakHours.includes(h)) {
-      baseVotes *= 1.5; // 50% more during peak hours
+    if (sampleVotes === 0) {
+      // No votes at all
+      hours.push({
+        time: hour,
+        votes: 0
+      });
+    } else {
+      // Distribute votes with peak during lunch and after work
+      let baseVotes = sampleVotes / 11; // 11 hours of voting
+      
+      if (peakHours.includes(h)) {
+        baseVotes *= 1.5; // 50% more during peak hours
+      }
+      
+      // Add some randomization for more realistic pattern
+      const randomFactor = 0.7 + (Math.random() * 0.6); // 0.7 to 1.3
+      baseVotes *= randomFactor;
+      
+      hours.push({
+        time: hour,
+        votes: Math.max(0, Math.round(baseVotes))
+      });
     }
-    
-    hours.push({
-      time: hour,
-      votes: Math.round(baseVotes)
-    });
   }
   
   return hours;

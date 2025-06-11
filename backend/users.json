@@ -1,50 +1,34 @@
 {
   "111-1111111-1": {
-    "address": "0x58f709ef64d5d6a7ac626c1fe6be8b122ff3ae86",
-    "privateKey": null,
-    "name": "Sebastian",
-    "province": "San Pedro de Macorís",
-    "authMethod": "metamask",
-    "registeredAt": "2025-06-09T04:45:10.263Z"
-  },
-  "000-0000000-0": {
-    "address": "0x8F8409FA08308FA90fe08afcE0cb3e398634f015",
-    "privateKey": "0x954dd3b70e27ee7704009735880ead257cfca45fe1601d8ab748ad48ee3948fa",
-    "name": "Sebastian",
-    "province": "San Pedro de Macorís",
-    "authMethod": "generated",
-    "registeredAt": "2025-06-09T06:31:42.425Z"
-  },
-  "333-3333333-3": {
-    "address": "0x47E9c8132d62834B0D00fa9FfF43C0618cc8588D",
-    "privateKey": "0xafabd87131e8138cbec7f55b7c8030bd5b9d34f2bf75bdce7163e2862b96d9e1",
-    "name": "q",
+    "address": "0xDf0C9edCAb16321d282D5965e8A8943eB213Fa23",
+    "privateKey": "0xafeead0b58aeb79db63c5876642f807c6d05897f20d88c5e072b68ec2281644d",
+    "name": "sebastian",
     "province": "Monte Plata",
     "authMethod": "generated",
-    "registeredAt": "2025-06-09T06:44:09.376Z"
+    "registeredAt": "2025-06-11T18:29:37.771Z"
   },
-  "444-4444444-4": {
-    "address": "0xBC50780561Cd03248B43046f2F74205919dd918d",
-    "privateKey": "0x45a1322bf50052486e1b9a3d952de3d359aa1fbb7d179cfb4c7d2f2bb723b224",
-    "name": "mm",
-    "province": "Monte Plata",
+  "888-8888888-8": {
+    "address": "0xD27084b7BEA0e536B6cBea1C5b898E19700C73bf",
+    "privateKey": "0x02ea530c384ff232886af5fb8201c5c60e30e09ae09aa7bc6ec7318a289b4d4d",
+    "name": "Diana",
+    "province": "Distrito Nacional",
     "authMethod": "generated",
-    "registeredAt": "2025-06-09T06:52:46.145Z"
+    "registeredAt": "2025-06-11T19:16:28.769Z"
   },
-  "555-5555555-5": {
-    "address": "0x8fc93E21DC6Cf2adBA78C44F83AB424396950b07",
-    "privateKey": "0xfafce802ba79cce2a67a9c5a88f534a3fe3bb50975717eef37006b79fd481cbe",
-    "name": "cc",
-    "province": "Sánchez Ramírez",
+  "222-2222222-2": {
+    "address": "0x13Ce4D0bf19bCB4Ede1dFEbAA495B2D32e993336",
+    "privateKey": "0x3399181639033cfa7b2f77f7fcaeb3d0ef55b0c2845c88b501d894327b9901d0",
+    "name": "iiiii",
+    "province": "Monseñor Nouel",
     "authMethod": "generated",
-    "registeredAt": "2025-06-09T07:19:33.378Z"
+    "registeredAt": "2025-06-11T19:38:00.024Z"
   },
   "666-6666666-6": {
-    "address": "0x3D9E91023dE4d9D9ae6E07FA6f6e804D72f54f4F",
-    "privateKey": "0x8c1522a84d942a3474df171d56a601c9d0b8cb9850eaea22d7aa7afb2141715a",
-    "name": "pablo",
-    "province": "María Trinidad Sánchez",
+    "address": "0x6389F2CcfE492219BA512aa2f3adc589391e762d",
+    "privateKey": "0x9533cd41b77d71e0a65c13b98eaddd5336e5b5f8c6d7509e4cb689279c02cd26",
+    "name": "fffff",
+    "province": "Monseñor Nouel",
     "authMethod": "generated",
-    "registeredAt": "2025-06-10T02:30:30.909Z"
+    "registeredAt": "2025-06-11T19:38:36.952Z"
   }
 }

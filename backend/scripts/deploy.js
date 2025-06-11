@@ -23,7 +23,7 @@ async function main() {
   await voting.waitForDeployment(); // ethers v6 style
 
   console.log("Voting contract deployed at:", voting.target);
-  console.log("⮕ Copy that address into .env as CONTRACT_ADDRESS");
+  // console.log("⮕ Copy that address into .env as CONTRACT_ADDRESS");
 }
 
 main().catch((error) => {

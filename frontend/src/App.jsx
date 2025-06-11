@@ -8,12 +8,21 @@ import Elections from "./components/Elections";
 import ElectionDetail from "./components/ElectionDetail";
 import Analytics from "./components/Analytics";
 import AdminPage from "./components/AdminPage";
+import { CONFIG } from "./config";
 
 function App() {
   const [user, setUser] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
+    // Check if contract address has changed and clear localStorage if so
+    const storedContractAddress = localStorage.getItem('contractAddress');
+    if (storedContractAddress && storedContractAddress !== CONFIG.CONTRACT_ADDRESS) {
+      console.log('Contract address changed, clearing localStorage');
+      localStorage.clear();
+    }
+    localStorage.setItem('contractAddress', CONFIG.CONTRACT_ADDRESS);
+    
     // Check if user is registered
     const userData = localStorage.getItem('currentUser');
     if (userData) {
