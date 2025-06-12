@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import ReactECharts from 'echarts-for-react';
 import { DOMINICAN_PROVINCES } from '../utils/dominican';
-import { getElections, getResults } from '../api';
+import { getElections, getResults, getElectionById } from '../api';
 import { mapUsersToProvinces, generateTimeBasedVotes, generateDemographicBreakdown } from '../utils/provinceUtils';
 
 const Analytics = () => {
@@ -48,9 +48,24 @@ const Analytics = () => {
       // Get real election data and user data
       const elections = await getElections();
 
+      // Get detailed election data
+      const electionDetails = await Promise.all(
+        elections.map(async (election) => {
+          try {
+            const response = await fetch(`http://localhost:3000/elections/${election.electionId}`);
+            return await response.json();
+          } catch (error) {
+            console.error(`Error fetching details for election ${election.electionId}:`, error);
+            return null;
+          }
+        })
+      );
+
+      const validElections = electionDetails.filter(e => e !== null);
+
       // Get real user data
       let users = {};
-      let totalRegistered = 5; // Default from our known data
+      let totalRegistered = 0;
       try {
         const usersResponse = await fetch('http://localhost:3000/users');
         users = await usersResponse.json();
@@ -59,56 +74,69 @@ const Analytics = () => {
         console.log('Could not fetch user data, using defaults');
       }
 
-      // Calculate total votes across all elections
+      // Calculate total votes and get real results from each election
       let totalVotes = 0;
-      let allResults = [];
+      let allElectionResults = [];
+      let votesByProvince = [];
 
-      for (const election of elections) {
+      const provinceVotes = {};
+
+      // Initialize all provinces with zero votes
+      DOMINICAN_PROVINCES.forEach(province => {
+        provinceVotes[province] = 0;
+      });
+
+      for (const election of validElections) {
         try {
           const results = await getResults(election.electionId);
           const electionVotes = Object.values(results).reduce((sum, count) => sum + count, 0);
           totalVotes += electionVotes;
 
-          // Store results with election info for detailed analysis
-          allResults.push({
-            electionId: election.electionId,
-            electionName: election.name,
-            results,
-            totalVotes: electionVotes
-          });
+          // Store actual results with election info
+          if (electionVotes > 0) {
+            allElectionResults.push({
+              electionId: election.electionId,
+              electionName: election.name,
+              results: results,
+              totalVotes: electionVotes
+            });
+          }
+
+          // For demo purposes, distribute votes to provinces
+          // In a real system, votes would be linked to user provinces
+          // Normally this would come from blockchain data
         } catch (error) {
           console.log(`No results for election ${election.electionId}`);
         }
       }
 
-      // Map users to provinces
-      const provinceMapping = mapUsersToProvinces(users);
+      // Get province user counts
+      const provinceUserCount = mapUsersToProvinces(users);
 
-      // Generate vote distribution by province
-      const votesByProvince = Object.entries(provinceMapping).map(([province, userCount]) => {
-        // Distribute total votes proportionally based on registered users
-        const percentage = userCount / totalRegistered;
-        const provincialVotes = Math.floor(totalVotes * percentage);
-
+      // Create vote by province data based on real users and zero votes
+      // (since we can't determine which province voted in which election)
+      votesByProvince = Object.entries(provinceUserCount).map(([province, userCount]) => {
         return {
           province,
-          votes: provincialVotes,
+          votes: provinceVotes[province] || 0, // Use real vote counts if available
           registeredUsers: userCount,
-          participationRate: userCount > 0 ? ((provincialVotes / userCount) * 100).toFixed(1) : 0
+          participationRate: userCount > 0 ?
+            (((provinceVotes[province] || 0) / userCount) * 100).toFixed(1) : 0
         };
       });
 
-      // Generate time-based analytics
-      const votesByTime = generateTimeBasedVotes(allResults);
+      // Generate time-based vote data
+      const votesByTime = generateTimeBasedVotes(allElectionResults);
 
-      // Generate demographic breakdown
-      const demographicBreakdown = generateDemographicBreakdown(users, totalVotes);
+      // Generate demographic breakdown with zeros (we don't have real demographic data)
+      const demographicBreakdown = generateDemographicBreakdown(users);
 
       // Calculate participation rate
-      const participationRate = totalRegistered > 0 ? ((totalVotes / totalRegistered) * 100).toFixed(1) : 0;
+      const participationRate = totalRegistered > 0 ?
+        ((totalVotes / totalRegistered) * 100).toFixed(1) : 0;
 
       setAnalyticsData({
-        votesByProvince: votesByProvince.filter(item => item.votes > 0 || item.registeredUsers > 0),
+        votesByProvince: votesByProvince.filter(item => item.registeredUsers > 0),
         votesByTime,
         demographicBreakdown,
         participationRate: parseFloat(participationRate),
@@ -119,29 +147,29 @@ const Analytics = () => {
     } catch (error) {
       console.error('Error loading analytics:', error);
 
-      // Fallback data
+      // Fallback data with zeros
       setAnalyticsData({
         votesByProvince: [
-          { province: 'San Pedro de Macorís', votes: 2, registeredUsers: 2, participationRate: 100 },
-          { province: 'Monte Plata', votes: 2, registeredUsers: 2, participationRate: 100 },
-          { province: 'Sánchez Ramírez', votes: 0, registeredUsers: 1, participationRate: 0 },
-          { province: 'María Trinidad Sánchez', votes: 0, registeredUsers: 1, participationRate: 0 }
+          { province: 'San Pedro de Macorís', votes: 0, registeredUsers: 0, participationRate: 0 },
+          { province: 'Monte Plata', votes: 0, registeredUsers: 0, participationRate: 0 },
+          { province: 'Sánchez Ramírez', votes: 0, registeredUsers: 0, participationRate: 0 },
+          { province: 'María Trinidad Sánchez', votes: 0, registeredUsers: 0, participationRate: 0 }
         ],
         votesByTime: [
-          { time: '09:00', votes: 1 },
-          { time: '12:00', votes: 2 },
-          { time: '15:00', votes: 1 },
+          { time: '09:00', votes: 0 },
+          { time: '12:00', votes: 0 },
+          { time: '15:00', votes: 0 },
           { time: '18:00', votes: 0 }
         ],
         demographicBreakdown: [
-          { ageGroup: '18-25', percentage: 16.7, color: '#14b8a6' },
-          { ageGroup: '26-35', percentage: 33.3, color: '#ff5722' },
-          { ageGroup: '36-50', percentage: 33.3, color: '#8b5cf6' },
-          { ageGroup: '50+', percentage: 16.7, color: '#f59e0b' }
+          { ageGroup: '18-25', percentage: 0, color: '#14b8a6' },
+          { ageGroup: '26-35', percentage: 0, color: '#ff5722' },
+          { ageGroup: '36-50', percentage: 0, color: '#8b5cf6' },
+          { ageGroup: '50+', percentage: 0, color: '#f59e0b' }
         ],
-        participationRate: 66.7,
-        totalVotes: 4,
-        totalRegistered: 6
+        participationRate: 0,
+        totalVotes: 0,
+        totalRegistered: 0
       });
     } finally {
       setLoading(false);

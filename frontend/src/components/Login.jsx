@@ -2,13 +2,9 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import {
-  LogIn,
   User,
   CreditCard,
-  ArrowRight,
-  UserCheck,
-  Zap,
-  Shield
+  UserCheck
 } from "lucide-react";
 import { validateDominicanID } from "../utils/dominican";
 
@@ -135,27 +131,13 @@ const Login = ({ setUser, setIsConnected, switchToRegister }) => {
         {/* Decorative elements */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-500 via-emerald-400 to-violet-500"></div>
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-primary-100 to-emerald-100 rounded-full blur-3xl opacity-30"></div>
-        <div className="absolute -bottom-16 -left-16 w-32 h-32 bg-gradient-to-br from-violet-100 to-rose-100 rounded-full blur-2xl opacity-40"></div>
-
-        {/* Header */}
+        <div className="absolute -bottom-16 -left-16 w-32 h-32 bg-gradient-to-br from-violet-100 to-rose-100 rounded-full blur-2xl opacity-40"></div>        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
           className="text-center mb-8 relative z-10"
         >
-          <div className="flex justify-center mb-6">
-            <div className="relative">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 rounded-2xl flex items-center justify-center shadow-button">
-                <LogIn className="w-8 h-8 text-white" />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl opacity-20 blur-sm animate-pulse-soft"></div>
-              {/* Floating mini elements */}
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full animate-bounce-soft"></div>
-              <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-violet-400 rounded-full animate-float"></div>
-            </div>
-          </div>
-
           <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 via-primary-700 to-slate-800 bg-clip-text text-transparent mb-3">
             Iniciar Sesión
           </h1>
@@ -245,13 +227,9 @@ const Login = ({ setUser, setIsConnected, switchToRegister }) => {
               {loading ? (
                 <>
                   <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Verificando credenciales...</span>
-                </>
-              ) : (
+                  <span>Verificando credenciales...</span>                </>) : (
                 <>
-                  <UserCheck className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
                   <span>Iniciar Sesión</span>
-                  <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
                 </>
               )}
             </div>
